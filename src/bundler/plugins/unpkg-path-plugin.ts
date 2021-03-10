@@ -13,6 +13,7 @@ export const unpkgPathPlugin = () => {
       build.onResolve({ filter: /^\.+\// }, (args: any) => {
         return {
           namespace: 'a',
+          //create new url from args.path and args.resolvedir
           path: new URL(args.path, 'https://unpkg.com' + args.resolveDir + '/')
             .href,
         };

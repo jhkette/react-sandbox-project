@@ -3,6 +3,7 @@ import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
 
 let service: esbuild.Service;
+// code gets passed as props
  const bundle = async (rawCode: string) => {
   // if not service start service
   if (!service) {
@@ -11,7 +12,7 @@ let service: esbuild.Service;
       wasmURL: 'https://unpkg.com/esbuild-wasm@0.8.27/esbuild.wasm',
     });
   }
-  // if not result start result
+  // bundle code and then return result
   const result = await service.build({
     entryPoints: ['index.js'],
     bundle: true,

@@ -6,16 +6,20 @@ const fileCache = localForage.createInstance({
   name: "filecache",
 });
 
+// takes input code as  parameter
 export const fetchPlugin = (inputCode: string) => {
   return {
     name: "fetch-plugin",
     setup(build: esbuild.PluginBuild) {
+      // runs input code
       build.onLoad({ filter: /(^index\.js$)/ }, () => {
         return {
           loader: "jsx",
+          // this is the input code from code editor
           contents: inputCode,
         };
       });
+      // filter for other requests
       build.onLoad({ filter: /.*/ }, async (args: any) => {
         // first get cached result
         const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(
@@ -35,16 +39,18 @@ export const fetchPlugin = (inputCode: string) => {
           .replace(/\n/g, "")
           .replace(/"/g, '\\"')
           .replace(/'/g, "\\'");
-        // create css as js
+        // create css as js 
         const contents = `
           const style = document.createElement('style');
           style.innerText = '${escaped}';
           document.head.appendChild(style);
         `;
-
+        // 
         const result: esbuild.OnLoadResult = {
           loader: "jsx",
+          // contents is the css turned into js style.innertext
           contents,
+          // resolveDir new URL 
           resolveDir: new URL("./", request.responseURL).pathname,
         };
         await fileCache.setItem(args.path, result);

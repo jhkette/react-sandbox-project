@@ -1,8 +1,9 @@
-import './preview.css';
-import { useRef, useEffect } from 'react';
+import "./preview.css";
+import { useRef, useEffect } from "react";
 
 interface PreviewProps {
-  code: string;
+  code: string
+  error: string
 }
 
 const html = `
@@ -13,13 +14,21 @@ const html = `
       <body>
         <div id="root"></div>
         <script>
+        const handleError = (err) => {
+          const root = document.querySelector('#root');
+              root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>';
+              console.error(err);
+
+        }
+          window.addEventListener('error', (event) => {
+            event.preventDefault()
+             handleError(event.error)
+          })
           window.addEventListener('message', (event) => {
             try {
               eval(event.data);
             } catch (err) {
-              const root = document.querySelector('#root');
-              root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>';
-              console.error(err);
+             handleError(err) 
             }
           }, false);
         </script>
@@ -27,15 +36,20 @@ const html = `
     </html>
   `;
 
-const Preview: React.FC<PreviewProps> = ({ code }) => {
+const Preview: React.FC<PreviewProps> = ({ code , error}) => {
   const iframe = useRef<any>();
 
   useEffect(() => {
+    // set srcdoc
     iframe.current.srcdoc = html;
-    iframe.current.contentWindow.postMessage(code, '*');
+    // postmessage to iframe -- need to be delayed
+    setTimeout(() => {
+      iframe.current.contentWindow.postMessage(code, "*");
+    }, 50);
   }, [code]);
-
+  console.log(error)
   return (
+    // wrap iframe in wrapper
     <div className="preview-wrapper">
       <iframe
         title="preview"
@@ -43,6 +57,7 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
         sandbox="allow-scripts"
         srcDoc={html}
       />
+      {error && <div className="preview-error">{error}</div>}
     </div>
   );
 };

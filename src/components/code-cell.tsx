@@ -4,16 +4,25 @@ import Preview from "./preview";
 import CodeEditor from "./code-editor";
 import bundle from "../bundler/index";
 import Resizable from './resizable'
+import {Cell} from '../state'
+import {useActions} from '../hooks/use-actions'
 
-// all logic jsx ect for code cells are here
-const CodeCell = () => {
-  const [input, setInput] = useState("");
+
+interface CodeCellProps {
+  cell: Cell
+}
+
+// all logic jsx ect for code cells are here  
+const CodeCell: React.FC< CodeCellProps> = ({cell}) => {
+  
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const {updateCell} = useActions()
 
   useEffect(() => {
     const timer  = setTimeout( async()=> {
-      const output = await bundle(input);
+      // run bundle on timer - when cell.content changes 
+      const output = await bundle(cell.content);
       setCode(output.code);
       setError(output.err);
 
@@ -23,20 +32,20 @@ const CodeCell = () => {
     return () => {
       clearTimeout(timer)
     }
-  }, [input])
+  }, [cell.content])
 
   
 
   return (
     // vertical resiable 
     <Resizable direction="vertical">
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'row' }}>
+    <div style={{ height: 'calc(100% - 10px)', display: 'flex', flexDirection: 'row' }}>
       {/* horizontal resizable for code editor*/}
       <Resizable direction="horizontal">
         {/* codeeditor -ie monaco editor */}
         <CodeEditor
-          initialValue="const a = 1;"
-          onChange={(value) => setInput(value)}
+          initialValue={cell.content}
+          onChange={(value) => updateCell(cell.id, value)}
         />
       </Resizable>
       {/* code preview */}

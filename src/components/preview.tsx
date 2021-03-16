@@ -5,7 +5,9 @@ interface PreviewProps {
   code: string
   error: string
 }
-
+// html for i frame 
+// error handling is done inside
+// eval(event.data) handles data that is sen 
 const html = `
     <html>
       <head>
@@ -42,7 +44,7 @@ const Preview: React.FC<PreviewProps> = ({ code , error}) => {
   useEffect(() => {
     // set srcdoc
     iframe.current.srcdoc = html;
-    // postmessage to iframe -- need to be delayed
+    // postmessage to iframe -- need to be delayed - for html of iframe to load first - otherwose error occurs
     setTimeout(() => {
       iframe.current.contentWindow.postMessage(code, "*");
     }, 50);

@@ -33,6 +33,7 @@ const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
   }, [width])
   
   // change resizableProps in accordance with direction prop
+  // for details of package https://www.npmjs.com/package/react-resizable
   if (direction === "horizontal") {
     resizableProps = {
       className: "resize-horizontal",

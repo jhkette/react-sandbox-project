@@ -2,12 +2,12 @@ import "./preview.css";
 import { useRef, useEffect } from "react";
 
 interface PreviewProps {
-  code: string
-  error: string
+  code: string;
+  error: string;
 }
-// html for i frame 
+// html for i frame
 // error handling is done inside
-// eval(event.data) handles data that is sen 
+// eval(event.data) handles data that is sen
 const html = `
     <html>
       <head>
@@ -38,18 +38,20 @@ const html = `
     </html>
   `;
 
-const Preview: React.FC<PreviewProps> = ({ code , error}) => {
+const Preview: React.FC<PreviewProps> = ({ code, error }) => {
+  // useref for iframe
   const iframe = useRef<any>();
-
   useEffect(() => {
-    // set srcdoc
+    // set srcdoc using ref
     iframe.current.srcdoc = html;
     // postmessage to iframe -- need to be delayed - for html of iframe to load first - otherwose error occurs
     setTimeout(() => {
       iframe.current.contentWindow.postMessage(code, "*");
     }, 50);
   }, [code]);
-  console.log(error)
+  if (error) {
+    console.log(error);
+  }
   return (
     // wrap iframe in wrapper
     <div className="preview-wrapper">

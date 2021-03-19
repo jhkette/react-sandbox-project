@@ -62,6 +62,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
   return (
     // wrap monaco editor in div
     <div className="editor-wrapper">
+      {/* button with format function */}
       <button className="button button-format is-primary is-small" onClick={onFormatClick}>Format</button>
       {/* monacoEditor with themes and language and options */}
       <MonacoEditor

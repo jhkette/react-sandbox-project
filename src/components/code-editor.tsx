@@ -1,7 +1,7 @@
 import './code-editor.css'
 import './syntax.css'
 import { useRef } from "react";
-import MonacoEditor, { EditorDidMount } from "@monaco-editor/react";
+import MonacoEditor, { OnMount } from "@monaco-editor/react";
 import prettier from "prettier";
 import parser from "prettier/parser-babel";
 import codeShift from 'jscodeshift'
@@ -14,54 +14,54 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
-
-  // const onEditorMount: OnMount = (editor, _monaco) => {
-  //   editorRef.current = editor;
-  //   editor.onDidChangeModelContent(() => onChange(editor.getValue()));
-  //   editor.getModel()?.updateOptions({ tabSize: 2 });
- 
-  //   const highlighter = new Highlighter(
-  //     //@ts-ignore
-  //     window.monaco,
-  //     codeShift,
-  //     editor,
-  //   );
-  //   highlighter.highLightOnDidChangeModelContent(
-  //     () => {},
-  //     () => {},
-  //     undefined,
-  //     () => {},
-  //   );
-  // }
-
   const editorRef = useRef<any>();
-
-  // getvalue - get the value from the monacoEditor
-  const onEditorDidMount: EditorDidMount = (
-    getValue: () => string,
-    monacoEditor: any
-  ) => {
-    // getref
-    editorRef.current = monacoEditor;
-    // get value by calling monacoEditor.onDidChangeModelContent
-    monacoEditor.onDidChangeModelContent(() => {
-      onChange(getValue());
-    });
-    monacoEditor.getModel()?.updateOptions({ tabSize: 2 });
-
+  const onEditorMount: OnMount = (editor, _monaco) => {
+    editorRef.current = editor;
+    editor.onDidChangeModelContent(() => onChange(editor.getValue()));
+    editor.getModel()?.updateOptions({ tabSize: 2 });
+ 
     const highlighter = new Highlighter(
-      // @ts-ignore
+      //@ts-ignore
       window.monaco,
       codeShift,
-      monacoEditor
-    )
+      editor,
+    );
     highlighter.highLightOnDidChangeModelContent(
       () => {},
       () => {},
       undefined,
-      () => {}
-    )
-  };
+      () => {},
+    );
+  }
+
+  
+
+  // // getvalue - get the value from the monacoEditor
+  // const onEditorDidMount: EditorDidMount = (
+  //   getValue: () => string,
+  //   monacoEditor: any
+  // ) => {
+  //   // getref
+  //   editorRef.current = monacoEditor;
+  //   // get value by calling monacoEditor.onDidChangeModelContent
+  //   monacoEditor.onDidChangeModelContent(() => {
+  //     onChange(getValue());
+  //   });
+  //   monacoEditor.getModel()?.updateOptions({ tabSize: 2 });
+
+  //   const highlighter = new Highlighter(
+  //     // @ts-ignore
+  //     window.monaco,
+  //     codeShift,
+  //     monacoEditor
+  //   )
+  //   highlighter.highLightOnDidChangeModelContent(
+  //     () => {},
+  //     () => {},
+  //     undefined,
+  //     () => {}
+  //   )
+  // };
 
   const onFormatClick = () => {
     //get current value from editor
@@ -86,9 +86,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
       <button className="button button-format is-primary is-small" onClick={onFormatClick}>Format</button>
       {/* monacoEditor with themes and language and options */}
       <MonacoEditor
-        editorDidMount={onEditorDidMount}
+        onMount={onEditorMount}
         value={initialValue}
-        theme="dark"
+        theme="vs-dark"
         language="javascript"
         height="100%"
         options={{

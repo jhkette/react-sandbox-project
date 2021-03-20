@@ -14,6 +14,26 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ onChange, initialValue }) => {
+
+  // const onEditorMount: OnMount = (editor, _monaco) => {
+  //   editorRef.current = editor;
+  //   editor.onDidChangeModelContent(() => onChange(editor.getValue()));
+  //   editor.getModel()?.updateOptions({ tabSize: 2 });
+ 
+  //   const highlighter = new Highlighter(
+  //     //@ts-ignore
+  //     window.monaco,
+  //     codeShift,
+  //     editor,
+  //   );
+  //   highlighter.highLightOnDidChangeModelContent(
+  //     () => {},
+  //     () => {},
+  //     undefined,
+  //     () => {},
+  //   );
+  // }
+
   const editorRef = useRef<any>();
 
   // getvalue - get the value from the monacoEditor
